@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
-app.use(express());
 app.use(express.json());
 app.use(cors());
 
@@ -19,25 +18,30 @@ const clientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phone: {
+    email: {
         type: Number,
         required: true,
         unique: true
     },
-    email: {
+    phone: {
         type: String,
         unique: true
     },
-    city: {
+    interest: {
+        type: String
+    },
+    contactTime: {
         type: String
     }
 })
 const clientDetails = mongoose.model("clientDetails", clientSchema);
 app.post("/register", async (req, res) => {
     const { name, email, phone, interest, contactTime } = req.body;
-    const isMatch = await clientDetails.findOne({ email, phone });
+    const isMatch = await clientDetails.findOne({
+        $or: [{ email }, { phone }]
+    });
     if (isMatch) {
-        return res.status(200).json({
+        return res.status(409).json({
             message: "Our team will contact you soon"
         })
     }
@@ -47,14 +51,14 @@ app.post("/register", async (req, res) => {
             email: req.body.email,
             phone: req.body.phone,
             interest: req.body.interest,
-            contactTime:req.body.contactTime
+            contactTime: req.body.contactTime
         });
         return res.status(201).json({
             message: "Our team will contact you soon!"
         })
     } catch (error) {
         console.log(error);
-        return res.status(404).json({
+        return res.status(500).json({
             message: "Something went wrong"
         })
     }
