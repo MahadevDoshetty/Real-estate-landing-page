@@ -52,7 +52,7 @@ const App: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(import.meta.env.VITE_URL, {
+      await fetch(import.meta.env.VITE_URL, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(form)
