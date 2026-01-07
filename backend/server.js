@@ -36,9 +36,7 @@ const clientSchema = new mongoose.Schema({
 const clientDetails = mongoose.model("clientDetails", clientSchema);
 app.post("/register", async (req, res) => {
     const { name, email, phone, interest, contactTime } = req.body;
-    const isMatch = await clientDetails.findOne({
-        $or: [{ email }, { phone }]
-    });
+    const isMatch = await clientDetails.findOne({ email});
     if (isMatch) {
         return res.status(409).json({
             message: "Our team will contact you soon"
